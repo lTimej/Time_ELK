@@ -3,6 +3,7 @@ package etcd
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"liujun/Time_ELK/common"
 	"liujun/Time_ELK/tail_task_mgr"
@@ -20,6 +21,17 @@ func Init(addr []string) error {
 		DialTimeout: time.Second * 5,
 	})
 	return err
+}
+
+func PutEtcValue(etcd_key string, etcd_value string) error {
+	fmt.Println(etcd_key, etcd_value)
+	ctx, cancel := context.WithCancel(context.Background())
+	_, err = Client.Put(ctx, etcd_key, etcd_value)
+	cancel()
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 //topic:path
