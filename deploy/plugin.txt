@@ -1,0 +1,1 @@
+https://github.com/medcl/elasticsearch-analysis-ik/releases?page=5
