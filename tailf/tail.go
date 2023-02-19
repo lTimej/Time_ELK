@@ -4,12 +4,13 @@ import (
 	"github.com/Shopify/sarama"
 	"github.com/hpcloud/tail"
 	"github.com/sirupsen/logrus"
-	"liujun/Time_ELK/etcd"
+	"liujun/Time_ELK/common"
 	"liujun/Time_ELK/kafka"
 )
 
 var (
-	err error
+	err     error
+	NewChan chan []common.EtcdMsg
 )
 
 type TailTask struct {
@@ -18,7 +19,7 @@ type TailTask struct {
 	Tail  *tail.Tail `json:"tail"`
 }
 
-func NewTailf(msg etcd.EtcdMsg) *TailTask {
+func NewTailf(msg common.EtcdMsg) *TailTask {
 	tail_task := &TailTask{
 		Path:  msg.Path,
 		Topic: msg.Topic,
@@ -51,7 +52,7 @@ func (tt *TailTask) Run() {
 	}
 }
 
-func Init(msgs []etcd.EtcdMsg) error {
+func Init(msgs []common.EtcdMsg) error {
 	for _, msg := range msgs {
 		tail_task := NewTailf(msg)
 		tail_task, err = tail_task.Init() //根据etcd创建任务
@@ -61,5 +62,10 @@ func Init(msgs []etcd.EtcdMsg) error {
 		//启动任务
 		go tail_task.Run()
 	}
+	NewChan = make(chan []common.EtcdMsg)
+	
 	return nil
+}
+func PutNewChan(new_chan []common.EtcdMsg) {
+	NewChan <- new_chan
 }

@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	clientv3 "go.etcd.io/etcd/client/v3"
+	"liujun/Time_ELK/common"
+	"liujun/Time_ELK/tailf"
 	"time"
 )
 
@@ -20,13 +22,8 @@ func Init(addr []string) error {
 	return err
 }
 
-type EtcdMsg struct {
-	Path  string `json:"path"`
-	Topic string `json:"topic"`
-}
-
 //topic:path
-func GetEtcdValue(etcd_key string) (data []EtcdMsg, err error) {
+func GetEtcdValue(etcd_key string) (data []common.EtcdMsg, err error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
 	resp, err := Client.Get(ctx, etcd_key)
 	defer cancel()
@@ -42,4 +39,18 @@ func GetEtcdValue(etcd_key string) (data []EtcdMsg, err error) {
 		return
 	}
 	return
+}
+
+func Watch(etcd_key string) {
+	ew := Client.Watch(context.Background(), etcd_key)
+	for wresp := range ew {
+		for _, ev := range wresp.Events {
+			data := []common.EtcdMsg{}
+			err := json.Unmarshal(ev.Kv.Value, &data)
+			if err != nil {
+				return
+			}
+			tailf.PutNewChan(data)
+		}
+	}
 }
