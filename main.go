@@ -5,7 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"liujun/Time_ELK/etcd"
 	"liujun/Time_ELK/kafka"
-	"liujun/Time_ELK/tailf"
+	"liujun/Time_ELK/tail_task_mgr"
 	"strings"
 )
 
@@ -56,7 +56,10 @@ func main() {
 		return
 	}
 	logrus.Println(etcd_value)
-	err = tailf.Init(etcd_value)
+
+	go etcd.Watch(config.EtcdConfig.CollectKey)
+
+	err = tail_task_mgr.Init(etcd_value)
 	if err != nil {
 		logrus.Println("tail初始化失败,err:", err)
 		return

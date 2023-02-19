@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"liujun/Time_ELK/common"
-	"liujun/Time_ELK/tailf"
+	"liujun/Time_ELK/tail_task_mgr"
 	"time"
 )
 
@@ -50,7 +50,7 @@ func Watch(etcd_key string) {
 			if err != nil {
 				return
 			}
-			tailf.PutNewChan(data)
+			tail_task_mgr.PutNewChan(data)
 		}
 	}
 }
