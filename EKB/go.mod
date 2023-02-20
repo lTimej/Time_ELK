@@ -4,7 +4,9 @@ go 1.19
 
 require (
 	github.com/Shopify/sarama v1.38.1
+	github.com/go-ini/ini v1.67.0
 	github.com/olivere/elastic/v7 v7.0.32
+	github.com/sirupsen/logrus v1.9.0
 )
 
 require (
@@ -29,4 +31,5 @@ require (
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa // indirect
 	golang.org/x/net v0.5.0 // indirect
+	golang.org/x/sys v0.4.0 // indirect
 )
